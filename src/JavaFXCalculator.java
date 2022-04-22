@@ -80,20 +80,21 @@ public class JavaFXCalculator extends Application {
         	 lastOperator = "^";
         	 break;
          case "M+":
-         	compute();
-         	lastOperator = "M+";
-         	break;
+        	 memory += Double.parseDouble(inStr);;
+        	 System.out.println("memory is :" + memory);
+        	 break;
          case "M-":
-          	compute();
-          	lastOperator = "M-";
+        	 memory -= Double.parseDouble(inStr);
+        	 System.out.println("memory is :" + memory);
           	break;
          case "MR":
-        	 compute();
-        	 lastOperator = "MR";
+        	 inStr = String.valueOf(memory);
+        	 System.out.println("memory is :" + memory);
+        	 tfDisplay.setText(memory + "");
         	 break;
          case "MC":
-        	 compute();
-        	 lastOperator = "MC";
+        	 memory = 0;
+        	 System.out.println("memory is :" + memory);
         	 break;
          case "<-":
         	if (inStr.length() > 1)
@@ -127,14 +128,6 @@ public class JavaFXCalculator extends Application {
          result *= inNum;
       } else if (lastOperator == "/") {
          result /= inNum;
-      } else if (lastOperator == "M+") {
-         memory += result;
-      } else if (lastOperator == "M-") {
-         memory -= result;
-      } else if (lastOperator == "MR") {
-         // need to do
-      } else if (lastOperator == "MC") { 
-    	 memory = 0;
       }else if (lastOperator == "^") {
          result = Math.pow(result, inNum);
       } else if (lastOperator == "sqrt()") {
