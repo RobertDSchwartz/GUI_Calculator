@@ -23,19 +23,19 @@ import java.lang.Math;
  */
 public class JavaFXCalculator extends Application {
 	/**
-	 * 
+	 * shows the user the current result and/or their input
 	 */
 	private TextField tfDisplay;    // display textfield
 	/**
-	 * 
+	 * shows the user what is currently the value of memory
 	 */
 	private Label memLabel = new Label();
 	/**
-	 * 
+	 * every button that the user can push
 	 */
 	private Button[] btns;          // 24 buttons
 	/**
-	 * 
+	 * labels on the buttons 
 	 */
 	private String[] btnLabels = {  // Labels of 24 buttons
 
@@ -48,26 +48,25 @@ public class JavaFXCalculator extends Application {
 	};
 	// For computation
 	/**
-	 * 
+	 * stores a number for later use when running
 	 */
 	private double memory = 0;
 	/**
-	 * 
+	 * the result of the input amount
 	 */
 	private double result = 0;      // Result of computation
 	/**
-	 * 
+	 * string of numbers that the user put together by pressing the buttons
 	 */
 	private String inStr = "0";  // Input number as String
-	// Previous operator: ' '(nothing), '+', '-', '*', '/', '='
+	// Previous operator: ' '(nothing), '+', '-', '*', '/', '^', '=', 
 	/**
-	 * 
+	 * operator button that the user pushed is stored in here
 	 */
 	private char lastOperator = ' ';
 
-	// Event handler for all the 24 Buttons
 	/**
-	 * 
+	 * Event handler for all the 24 Buttons
 	 */
 	EventHandler handler = evt -> {
 		String currentBtnLabel = ((Button)evt.getSource()).getText();
@@ -89,7 +88,7 @@ public class JavaFXCalculator extends Application {
 			}
 			break;
 
-			// Operator buttons: '+', '-', 'x', '/' and '='
+			// Operator buttons: '+', '-', 'x', '/', '^', 'sqrt', 'M+', 'M-', 'MR', 'MC', '<-' and '='
 		case "+":
 			compute();
 			lastOperator = '+';
@@ -106,10 +105,6 @@ public class JavaFXCalculator extends Application {
 			compute();
 			lastOperator = '/';
 			break;
-		case "=":
-			compute();
-			lastOperator = '=';
-			break;
 		case "^":
 			compute();
 			lastOperator = '^';
@@ -119,24 +114,28 @@ public class JavaFXCalculator extends Application {
 				result = Math.sqrt(result);
 			else 
 				result = Math.sqrt(Double.parseDouble(inStr));
-			lastOperator = 'q';
-			compute();
+			inStr = (result + "");
+			tfDisplay.setText(result + "");
 			break;
 		case "M+":
-			if (result != 0) {
+			if (lastOperator == '=') {
 				memory += result;
 			}else {
 				memory += Double.parseDouble(inStr);
+				result = Double.parseDouble(inStr);
 			}
 			memLabel.setText("memory is: " + memory);
+			inStr = "0";
 			break;
 		case "M-":
 			if (result != 0) {
 				memory -= result;
 			}else {
 				memory -= Double.parseDouble(inStr);
+				result = Double.parseDouble(inStr);
 			}
 			memLabel.setText("memory is: " + memory);
+			inStr = "0";
 			break;
 		case "MR":
 			inStr = String.valueOf(memory);
@@ -146,10 +145,16 @@ public class JavaFXCalculator extends Application {
 			memory = 0;
 			memLabel.setText("memory is: " + memory);
 			break;
-		case "<-":
+		case "\u2190":
 			if (inStr.length() > 1)
 				inStr = inStr.substring(0, inStr.length() - 1);
+			else if (inStr.length() == 1)
+				inStr = "0";
 			tfDisplay.setText(inStr);
+			break;
+		case "=":
+			compute();
+			lastOperator = '=';
 			break;
 
 			// Clear button
@@ -162,11 +167,10 @@ public class JavaFXCalculator extends Application {
 		}
 	};
 
-	// User pushes '+', '-', '*', '/' or '=' button.
-	// Perform computation on the previous result and the current input number,
-	// based on the previous operator.
 	/**
-	 * 
+	 * User pushes '+', '-', '*', '/' '^' or '=' button.
+	 * Perform computation on the previous result and the current input number,
+	 * based on the previous operator.
 	 */
 	private void compute() {
 		double inNum = Double.parseDouble(inStr);
@@ -183,7 +187,6 @@ public class JavaFXCalculator extends Application {
 			result /= inNum;
 		}else if (lastOperator == '^') {
 			result = Math.pow(result, inNum);
-		} else if (lastOperator == 'q') {
 		} else if (lastOperator == '=') {
 			// Keep the result for the next operation
 		}
@@ -191,9 +194,8 @@ public class JavaFXCalculator extends Application {
 		
 	}
 
-	// Setup the UI
 	/**
-	 *
+	 * puts together the user interface using btns and btnLabels
 	 */
 	@Override
 	public void start(Stage primaryStage) {
@@ -252,7 +254,9 @@ public class JavaFXCalculator extends Application {
 	}
 
 	/**
-	 * @param args
+	 * launches the program
+	 * 
+	 * @param args no command line input args are used for this application
 	 */
 	public static void main(String[] args) {
 		launch(args);
